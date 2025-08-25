@@ -1,0 +1,58 @@
+{
+  "lastUpdated": "2025-08-25T09:00:00Z",
+  "protocols": [
+    {
+      "id": "prot-001",
+      "name": "Morning Walk",
+      "summary": "Easy-zone walk to kickstart the day and improve circulation.",
+      "healthMetrics": [
+        "HKQuantityTypeIdentifier.stepCount",
+        "HKQuantityTypeIdentifier.heartRate"
+      ],
+      "frequency": {
+        "kind": "daily"
+      },
+      "unit": "min",
+      "value": 20
+    },
+    {
+      "id": "prot-002",
+      "name": "Protein Intake",
+      "summary": "Maintain a minimum daily protein target for recovery and growth.",
+      "healthMetrics": [
+        "HKQuantityTypeIdentifier.dietaryProtein"
+      ],
+      "frequency": {
+        "kind": "daily"
+      },
+      "unit": "g",
+      "value": 160
+    },
+    {
+      "id": "prot-003",
+      "name": "Cold Plunge",
+      "summary": "Short cold exposure for alertness and resilience.",
+      "healthMetrics": [],
+      "frequency": {
+        "kind": "timesPerWeek",
+        "times": 3
+      },
+      "unit": "min",
+      "value": 3
+    },
+    {
+      "id": "prot-004",
+      "name": "Meditation",
+      "summary": "Mindfulness breathing practice to reduce stress.",
+      "healthMetrics": [
+        "HKCategoryTypeIdentifier.mindfulSession"
+      ],
+      "frequency": {
+        "kind": "intervalDays",
+        "interval": 2
+      },
+      "unit": "min",
+      "value": 15
+    }
+  ]
+}
