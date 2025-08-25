@@ -1,58 +1,459 @@
 {
-  "lastUpdated": "2025-08-25T09:00:00Z",
+  "lastUpdated": "2025-08-25T10:00:00Z",
+  "version": "2.0",
   "protocols": [
     {
-      "id": "prot-001",
-      "name": "Morning Walk",
-      "summary": "Easy-zone walk to kickstart the day and improve circulation.",
+      "id": "carnivore-diet",
+      "name": "Carnivore Diet",
+      "category": "nutrition",
+      "summary": "Animal-based diet focusing on meat, fish, and eggs",
+      "description": "A restrictive diet that eliminates all plant foods and focuses on animal products. May help with inflammation, energy, and body composition.",
+      
+      "evidence": {
+        "level": "moderate",
+        "confidence": 0.7,
+        "studies": [
+          {
+            "title": "Carnivore Diet and Inflammation",
+            "year": 2023,
+            "participants": 150,
+            "duration": "12 weeks"
+          }
+        ],
+        "notes": "Limited long-term studies, but strong anecdotal evidence for certain conditions."
+      },
+      
+      "timeframe": {
+        "typicalWeeks": [2, 6],
+        "description": "Most users report changes within 2-6 weeks"
+      },
+      
+      "effort": {
+        "level": "high",
+        "dailyTimeMinutes": 0,
+        "preparationRequired": true,
+        "socialImpact": "high"
+      },
+      
+      "instructions": {
+        "steps": [
+          "Eliminate all plant foods (vegetables, fruits, grains, legumes)",
+          "Focus on fatty cuts of meat, fish, eggs, and organ meats",
+          "Drink water, bone broth, and salt to taste",
+          "Avoid processed foods and added sugars"
+        ],
+        "frequency": "daily",
+        "dosage": null,
+        "duration": "ongoing",
+        "tips": [
+          "Start with a 30-day trial period",
+          "Listen to your body's hunger signals",
+          "Consider supplementing with electrolytes"
+        ]
+      },
+      
       "healthMetrics": [
-        "HKQuantityTypeIdentifier.stepCount",
-        "HKQuantityTypeIdentifier.heartRate"
+        {
+          "type": "HKQuantityTypeIdentifier.bodyMass",
+          "name": "Weight",
+          "unit": "kg",
+          "expectedDirection": "decrease",
+          "lagDays": 7,
+          "importance": "high"
+        },
+        {
+          "type": "HKQuantityTypeIdentifier.bodyFatPercentage", 
+          "name": "Body Fat %",
+          "unit": "%",
+          "expectedDirection": "decrease",
+          "lagDays": 14,
+          "importance": "high"
+        },
+        {
+          "type": "HKQuantityTypeIdentifier.restingHeartRate",
+          "name": "Resting Heart Rate",
+          "unit": "bpm",
+          "expectedDirection": "decrease",
+          "lagDays": 21,
+          "importance": "medium"
+        },
+        {
+          "type": "HKQuantityTypeIdentifier.heartRateVariabilitySDNN",
+          "name": "HRV",
+          "unit": "ms",
+          "expectedDirection": "increase",
+          "lagDays": 14,
+          "importance": "medium"
+        },
+        {
+          "type": "HKCategoryTypeIdentifier.sleepAnalysis",
+          "name": "Sleep Quality",
+          "unit": "hours",
+          "expectedDirection": "improve",
+          "lagDays": 7,
+          "importance": "medium"
+        }
       ],
-      "frequency": {
-        "kind": "daily"
+      
+      "checkIn": {
+        "defaultTime": "20:30",
+        "frequency": "daily",
+        "questions": [
+          {
+            "id": "adherence",
+            "type": "slider",
+            "question": "How closely did you follow the carnivore diet today?",
+            "min": 0,
+            "max": 100,
+            "default": 50
+          },
+          {
+            "id": "energy",
+            "type": "scale",
+            "question": "How was your energy level today?",
+            "min": 1,
+            "max": 10,
+            "default": 5
+          },
+          {
+            "id": "notes",
+            "type": "text",
+            "question": "Any notes about today?",
+            "optional": true
+          }
+        ]
       },
-      "unit": "min",
-      "value": 20
+      
+      "reminders": {
+        "enabled": true,
+        "defaultTime": "20:30",
+        "message": "Time to check in on your carnivore diet progress",
+        "quietHours": {
+          "start": "22:00",
+          "end": "07:00"
+        }
+      },
+      
+      "pricing": {
+        "type": "free",
+        "premiumFeatures": []
+      },
+      
+      "tags": ["diet", "weight-loss", "inflammation", "energy"],
+      "difficulty": "advanced",
+      "contraindications": [
+        "Pregnant or nursing women should consult healthcare provider",
+        "Not recommended for those with kidney disease"
+      ]
     },
+    
     {
-      "id": "prot-002",
-      "name": "Protein Intake",
-      "summary": "Maintain a minimum daily protein target for recovery and growth.",
+      "id": "creatine-supplementation",
+      "name": "Creatine Supplementation",
+      "category": "supplement",
+      "summary": "5g daily creatine monohydrate for strength and muscle gains",
+      "description": "One of the most researched supplements for improving strength, power, and muscle mass.",
+      
+      "evidence": {
+        "level": "high",
+        "confidence": 0.9,
+        "studies": [
+          {
+            "title": "Creatine Supplementation and Muscle Performance",
+            "year": 2022,
+            "participants": 500,
+            "duration": "8 weeks"
+          }
+        ],
+        "notes": "Extensive research supports creatine's effectiveness for strength and muscle gains."
+      },
+      
+      "timeframe": {
+        "typicalWeeks": [2, 4],
+        "description": "Loading phase: 5-7 days, then maintenance"
+      },
+      
+      "effort": {
+        "level": "low",
+        "dailyTimeMinutes": 1,
+        "preparationRequired": false,
+        "socialImpact": "low"
+      },
+      
+      "instructions": {
+        "steps": [
+          "Take 5g creatine monohydrate daily",
+          "Mix with water, juice, or protein shake",
+          "Timing doesn't matter - consistency is key"
+        ],
+        "frequency": "daily",
+        "dosage": "5g",
+        "duration": "ongoing",
+        "tips": [
+          "Start with loading phase: 20g/day for 5-7 days",
+          "Then maintain with 5g/day",
+          "Stay well hydrated"
+        ]
+      },
+      
       "healthMetrics": [
-        "HKQuantityTypeIdentifier.dietaryProtein"
+        {
+          "type": "HKQuantityTypeIdentifier.bodyMass",
+          "name": "Weight",
+          "unit": "kg",
+          "expectedDirection": "increase",
+          "lagDays": 3,
+          "importance": "medium"
+        },
+        {
+          "type": "HKQuantityTypeIdentifier.leanBodyMass",
+          "name": "Lean Mass",
+          "unit": "kg", 
+          "expectedDirection": "increase",
+          "lagDays": 14,
+          "importance": "high"
+        }
       ],
-      "frequency": {
-        "kind": "daily"
+      
+      "checkIn": {
+        "defaultTime": "08:00",
+        "frequency": "daily",
+        "questions": [
+          {
+            "id": "adherence",
+            "type": "slider",
+            "question": "Did you take your creatine today?",
+            "min": 0,
+            "max": 100,
+            "default": 100
+          },
+          {
+            "id": "strength",
+            "type": "scale",
+            "question": "How did your strength feel today?",
+            "min": 1,
+            "max": 10,
+            "default": 5
+          }
+        ]
       },
-      "unit": "g",
-      "value": 160
-    },
-    {
-      "id": "prot-003",
-      "name": "Cold Plunge",
-      "summary": "Short cold exposure for alertness and resilience.",
-      "healthMetrics": [],
-      "frequency": {
-        "kind": "timesPerWeek",
-        "times": 3
+      
+      "reminders": {
+        "enabled": true,
+        "defaultTime": "08:00",
+        "message": "Don't forget your creatine!",
+        "quietHours": {
+          "start": "22:00",
+          "end": "07:00"
+        }
       },
-      "unit": "min",
-      "value": 3
+      
+      "pricing": {
+        "type": "free",
+        "premiumFeatures": []
+      },
+      
+      "tags": ["supplement", "strength", "muscle", "performance"],
+      "difficulty": "beginner",
+      "contraindications": [
+        "Consult healthcare provider if you have kidney disease"
+      ]
     },
+    
     {
-      "id": "prot-004",
-      "name": "Meditation",
-      "summary": "Mindfulness breathing practice to reduce stress.",
+      "id": "meditation-daily",
+      "name": "Daily Meditation",
+      "category": "mindfulness",
+      "summary": "15-minute daily mindfulness meditation practice",
+      "description": "Regular meditation practice to reduce stress, improve focus, and enhance emotional well-being.",
+      
+      "evidence": {
+        "level": "high",
+        "confidence": 0.8,
+        "studies": [
+          {
+            "title": "Mindfulness Meditation and Stress Reduction",
+            "year": 2023,
+            "participants": 300,
+            "duration": "8 weeks"
+          }
+        ],
+        "notes": "Strong evidence for stress reduction and improved mental health outcomes."
+      },
+      
+      "timeframe": {
+        "typicalWeeks": [2, 8],
+        "description": "Benefits often noticed within 2-8 weeks of consistent practice"
+      },
+      
+      "effort": {
+        "level": "medium",
+        "dailyTimeMinutes": 15,
+        "preparationRequired": false,
+        "socialImpact": "low"
+      },
+      
+      "instructions": {
+        "steps": [
+          "Find a quiet, comfortable space",
+          "Sit with your back straight but relaxed",
+          "Close your eyes and focus on your breath",
+          "When your mind wanders, gently return to your breath",
+          "Start with 5 minutes and gradually increase to 15"
+        ],
+        "frequency": "daily",
+        "dosage": "15 minutes",
+        "duration": "ongoing",
+        "tips": [
+          "Morning meditation can set a positive tone for the day",
+          "Use guided meditation apps if helpful",
+          "Be patient with yourself - it's normal for the mind to wander"
+        ]
+      },
+      
       "healthMetrics": [
-        "HKCategoryTypeIdentifier.mindfulSession"
+        {
+          "type": "HKQuantityTypeIdentifier.heartRateVariabilitySDNN",
+          "name": "HRV",
+          "unit": "ms",
+          "expectedDirection": "increase",
+          "lagDays": 7,
+          "importance": "high"
+        },
+        {
+          "type": "HKQuantityTypeIdentifier.restingHeartRate",
+          "name": "Resting Heart Rate",
+          "unit": "bpm",
+          "expectedDirection": "decrease",
+          "lagDays": 14,
+          "importance": "medium"
+        },
+        {
+          "type": "HKCategoryTypeIdentifier.sleepAnalysis",
+          "name": "Sleep Quality",
+          "unit": "hours",
+          "expectedDirection": "improve",
+          "lagDays": 7,
+          "importance": "medium"
+        },
+        {
+          "type": "HKCategoryTypeIdentifier.mindfulSession",
+          "name": "Mindful Minutes",
+          "unit": "minutes",
+          "expectedDirection": "increase",
+          "lagDays": 0,
+          "importance": "high"
+        }
       ],
-      "frequency": {
-        "kind": "intervalDays",
-        "interval": 2
+      
+      "checkIn": {
+        "defaultTime": "07:00",
+        "frequency": "daily",
+        "questions": [
+          {
+            "id": "adherence",
+            "type": "slider",
+            "question": "How long did you meditate today?",
+            "min": 0,
+            "max": 60,
+            "default": 15
+          },
+          {
+            "id": "quality",
+            "type": "scale",
+            "question": "How focused was your meditation?",
+            "min": 1,
+            "max": 10,
+            "default": 5
+          },
+          {
+            "id": "stress",
+            "type": "scale",
+            "question": "How stressed do you feel today?",
+            "min": 1,
+            "max": 10,
+            "default": 5
+          }
+        ]
       },
-      "unit": "min",
-      "value": 15
+      
+      "reminders": {
+        "enabled": true,
+        "defaultTime": "07:00",
+        "message": "Time for your daily meditation",
+        "quietHours": {
+          "start": "22:00",
+          "end": "07:00"
+        }
+      },
+      
+      "pricing": {
+        "type": "free",
+        "premiumFeatures": ["guided_sessions", "progress_analytics"]
+      },
+      
+      "tags": ["mindfulness", "stress", "focus", "sleep"],
+      "difficulty": "beginner",
+      "contraindications": []
     }
-  ]
+  ],
+  
+  "categories": [
+    {
+      "id": "nutrition",
+      "name": "Nutrition",
+      "icon": "leaf.fill",
+      "color": "#4CAF50"
+    },
+    {
+      "id": "supplement", 
+      "name": "Supplements",
+      "icon": "pill.fill",
+      "color": "#2196F3"
+    },
+    {
+      "id": "mindfulness",
+      "name": "Mindfulness",
+      "icon": "brain.head.profile",
+      "color": "#9C27B0"
+    },
+    {
+      "id": "exercise",
+      "name": "Exercise",
+      "icon": "figure.walk",
+      "color": "#FF9800"
+    },
+    {
+      "id": "sleep",
+      "name": "Sleep",
+      "icon": "bed.double.fill", 
+      "color": "#673AB7"
+    }
+  ],
+  
+  "filters": {
+    "goals": [
+      "weight-loss",
+      "muscle-gain", 
+      "stress-reduction",
+      "better-sleep",
+      "improved-focus",
+      "increased-energy"
+    ],
+    "timeCommitment": [
+      "low",
+      "medium", 
+      "high"
+    ],
+    "evidenceLevel": [
+      "low",
+      "moderate",
+      "high"
+    ],
+    "difficulty": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ]
+  }
 }
