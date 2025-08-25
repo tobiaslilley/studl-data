@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>studl-data – JSON CRUD Editor</title>
+  <style>
+    :root { --bg:#0b1020; --card:#111833; --ink:#eaf0ff; --muted:#9fb0ff; --accent:#7497fd; --danger:#ff6b6b; --ok:#2ecc71; }
+    *{box-sizing:border-box}
+    body{margin:0;font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--ink);background:linear-gradient(180deg,#0b1020,#0b1226)}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 20px;background:rgba(255,255,255,0.02);backdrop-filter:saturate(120%) blur(6px);position:sticky;top:0;border-bottom:1px solid rgba(255,255,255,0.06)}
+    h1{font-size:18px;margin:0;color:var(--ink)}
+    .sub{color:var(--muted);font-size:12px}
+    main{max-width:1200px;margin:24px auto;padding:0 16px 32px}
+    .grid{display:grid;grid-template-columns:1.2fr 2fr;gap:16px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.2);overflow:hidden}
+    .card h2{margin:0;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:14px;color:var(--ink)}
+    .card .body{padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
+    input,textarea,select{width:100%;padding:10px 12px;border-radius:10px;background:#0c1430;border:1px solid rgba(255,255,255,0.08);color:var(--ink)}
+    input[type="checkbox"]{width:auto}
+    .row{display:flex;gap:10px}
+    .row>div{flex:1}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{appearance:none;border:1px solid rgba(255,255,255,0.1);padding:10px 14px;border-radius:12px;background:#0e1a3d;color:var(--ink);cursor:pointer}
+    button.primary{background:var(--accent);color:#08122e;border-color:transparent;font-weight:600}
+    button.danger{background:#2b0f15;border-color:#64202c;color:#ff9ea8}
+    button.ok{background:#0e2b1a;border-color:#1d5c38;color:#bff5d4}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid rgba(255,255,255,0.06);padding:8px 6px;vertical-align:top}
+    th{font-size:12px;color:var(--muted);text-align:left}
+    td input, td textarea{width:100%}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#0e1a3d;color:var(--muted);font-size:12px}
+    .footer{margin-top:16px;color:var(--muted);font-size:12px}
+    .hint{font-size:12px;color:var(--muted)}
+    .status{margin-left:auto;font-size:12px}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;background:#0b132b;border:1px solid rgba(255,255,255,0.06);padding:1px 6px;border-radius:6px}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .small{font-size:12px}
+    .muted{color:var(--muted)}
+    .spacer{height:8px}
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>studl-data JSON Editor</h1>
+      <div class="sub">Edit <code>protocols.json</code> and commit directly to your repo via the GitHub API.</div>
+    </div>
+    <div class="status" id="status">Idle</div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>Repository & Auth</h2>
+        <div class="body">
+          <div class="row">
+            <div>
+              <label>Owner</label>
+              <input id="owner" placeholder="tobiaslilley" />
+            </div>
+            <div>
+              <label>Repo</label>
+              <input id="repo" placeholder="studl-data" />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label>Branch</label>
+              <input id="branch" placeholder="main" />
+            </div>
+            <div>
+              <label>File path</label>
+              <input id="path" placeholder="protocols.json" />
+            </div>
+          </div>
+          <label>GitHub Personal Access Token <span class="muted">(fine‑grained, repo contents: read/write – never stored)</span></label>
+          <input id="token" type="password" placeholder="ghp_********" autocomplete="off" />
+
+          <div class="actions">
+            <button id="btnLoad" class="primary">Load JSON</button>
+            <button id="btnSave" class="ok">Save to GitHub</button>
+            <button id="btnExport">Download .json</button>
+            <label class="pill">
+              <input type="file" id="fileImport" accept="application/json" style="display:none" />
+              <span id="btnImport" style="cursor:pointer">Import .json</span>
+            </label>
+          </div>
+          <div class="footer">
+            <div>Tip: Generate a <strong>fine‑grained</strong> token scoped to this repo only. This page will not transmit it anywhere except the official GitHub API.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Commit</h2>
+        <div class="body">
+          <label>Commit message</label>
+          <input id="commitMsg" placeholder="chore: update protocols.json" />
+          <div class="row">
+            <div>
+              <label>Your name (for commit)</label>
+              <input id="authorName" placeholder="Tobias Lilley" />
+            </div>
+            <div>
+              <label>Your email (for commit)</label>
+              <input id="authorEmail" placeholder="you@example.com" />
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <div class="hint">If you prefer, leave name/email blank to let GitHub infer from the token.</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:16px">
+      <h2>Protocols <span id="count" class="muted"></span></h2>
+      <div class="body">
+        <div class="row">
+          <div>
+            <label>Quick filter</label>
+            <input id="filter" placeholder="Type to filter by name or description…"/>
+          </div>
+          <div style="align-self:flex-end">
+            <button id="btnAdd" class="primary">+ Add Protocol</button>
+            <button id="btnPretty">Prettify JSON</button>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <div style="overflow:auto; max-height:60vh; border:1px solid rgba(255,255,255,0.06); border-radius:12px">
+          <table id="table">
+            <thead>
+              <tr>
+                <th style="min-width:220px">Name</th>
+                <th>Description</th>
+                <th style="min-width:160px">Frequency</th>
+                <th style="min-width:120px">Unit</th>
+                <th style="min-width:110px">Value</th>
+                <th style="min-width:220px">HealthKit Metrics (comma‑separated)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="spacer"></div>
+        <label>Raw JSON (editable)</label>
+        <textarea id="raw" rows="12" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h2>Help</h2>
+      <div class="body small">
+        <p><strong>What this does:</strong> loads <span class="kbd">protocols.json</span>, lets you edit it in a table or raw JSON, and commits back to your GitHub repo using the official Contents API.</p>
+        <p><strong>Security:</strong> your token is used only for the API call from your browser to GitHub. It is <em>not</em> stored (fields aside from owner/repo/branch/path are not persisted), and there’s no server.</p>
+        <p><strong>Schema:</strong> each record is an object with keys <span class="kbd">name</span>, <span class="kbd">description</span>, <span class="kbd">frequency</span>, <span class="kbd">unit</span>, <span class="kbd">value</span>, and <span class="kbd">metrics</span> (array of strings). Adjust as needed; this editor won’t block extra fields.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // --- Utilities ---
+    const qs = (s)=>document.querySelector(s);
+    const statusEl = qs('#status');
+    const setStatus = (t)=>statusEl.textContent = t;
+
+    function base64EncodeUnicode(str){
+      // handle UTF‑8 safely
+      return btoa(unescape(encodeURIComponent(str)));
+    }
+
+    function base64DecodeUnicode(str){
+      return decodeURIComponent(escape(atob(str)));
+    }
+
+    function saveBasics(){
+      localStorage.setItem('studl.owner', qs('#owner').value.trim());
+      localStorage.setItem('studl.repo', qs('#repo').value.trim());
+      localStorage.setItem('studl.branch', qs('#branch').value.trim());
+      localStorage.setItem('studl.path', qs('#path').value.trim());
+    }
+
+    function loadBasics(){
+      qs('#owner').value = localStorage.getItem('studl.owner') || 'tobiaslilley';
+      qs('#repo').value = localStorage.getItem('studl.repo') || 'studl-data';
+      qs('#branch').value = localStorage.getItem('studl.branch') || 'main';
+      qs('#path').value = localStorage.getItem('studl.path') || 'protocols.json';
+    }
+
+    // --- Data model ---
+    let data = [];
+    let fileSHA = null; // needed for update
+
+    function render(){
+      const filter = qs('#filter').value.toLowerCase();
+      const tbody = qs('#tbody');
+      tbody.innerHTML = '';
+      (data||[]).forEach((row, idx)=>{
+        const hay = (row.name+" "+row.description).toLowerCase();
+        if(filter && !hay.includes(filter)) return;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input value="${escapeHtml(row.name||'')}" data-k="name" data-i="${idx}"></td>
+          <td><textarea rows="2" data-k="description" data-i="${idx}">${escapeHtml(row.description||'')}</textarea></td>
+          <td><input value="${escapeHtml(row.frequency||'')}" data-k="frequency" data-i="${idx}"></td>
+          <td><input value="${escapeHtml(row.unit||'')}" data-k="unit" data-i="${idx}"></td>
+          <td><input value="${escapeHtml(row.value!=null?String(row.value):'')}" data-k="value" data-i="${idx}"></td>
+          <td><input value="${escapeHtml((row.metrics||[]).join(', '))}" data-k="metrics" data-i="${idx}"></td>
+          <td>
+            <button class="danger" data-del="${idx}">Delete</button>
+            <span class="muted small">#${idx+1}</span>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+      qs('#raw').value = JSON.stringify(data, null, 2);
+      qs('#count').textContent = `(${data.length} items)`;
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"]+/g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s]));
+    }
+
+    // --- Event wiring ---
+    loadBasics();
+
+    qs('#btnLoad').addEventListener('click', loadFromGitHub);
+    qs('#btnSave').addEventListener('click', saveToGitHub);
+    qs('#btnAdd').addEventListener('click', ()=>{ data.push({name:"",description:"",frequency:"",unit:"",value:0,metrics:[]}); render(); });
+    qs('#btnPretty').addEventListener('click', ()=>{ try{ const j=JSON.parse(qs('#raw').value); data=j; render(); }catch(e){ alert('Invalid JSON'); }});
+    qs('#filter').addEventListener('input', render);
+
+    qs('#tbody').addEventListener('input', (e)=>{
+      const k = e.target.getAttribute('data-k');
+      const i = +e.target.getAttribute('data-i');
+      if(k){
+        let v = e.target.value;
+        if(k==='value') v = v === '' ? null : Number(v);
+        if(k==='metrics') v = v.split(',').map(s=>s.trim()).filter(Boolean);
+        data[i] = { ...(data[i]||{}), [k]: v };
+        qs('#raw').value = JSON.stringify(data, null, 2);
+      }
+    });
+
+    qs('#tbody').addEventListener('click', (e)=>{
+      const del = e.target.getAttribute('data-del');
+      if(del!=null){
+        if(confirm('Delete this protocol?')){ data.splice(+del,1); render(); }
+      }
+    });
+
+    // Import/export
+    qs('#btnExport').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = qs('#path').value || 'protocols.json';
+      a.click();
+    });
+
+    const fileInput = qs('#fileImport');
+    qs('#btnImport').addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', ()=>{
+      const f = fileInput.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        try{ data = JSON.parse(reader.result); render(); }
+        catch(e){ alert('Invalid JSON in file.'); }
+      };
+      reader.readAsText(f);
+    });
+
+    // --- GitHub API ---
+    async function loadFromGitHub(){
+      try{
+        setStatus('Loading…');
+        saveBasics();
+        const {owner, repo, branch, path} = getRepoFields();
+        // Try branch ref to ensure it exists
+        const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`);
+        if(refRes.status===404) throw new Error(`Branch '${branch}' not found.`);
+        // Get file contents (Contents API)
+        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+        const res = await fetch(url);
+        if(res.status===404){
+          if(confirm(`${path} not found on ${branch}. Create a new file with an empty array?`)){
+            data = []; fileSHA = null; render(); setStatus('Ready (new file)'); return;
+          } else {
+            setStatus('File not found'); return;
+          }
+        }
+        if(!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+        const json = await res.json();
+        fileSHA = json.sha;
+        const content = base64DecodeUnicode(json.content.replace(/\n/g,''));
+        data = JSON.parse(content);
+        render();
+        setStatus('Loaded');
+      }catch(err){
+        console.error(err); setStatus('Error'); alert(err.message||String(err));
+      }
+    }
+
+    function getRepoFields(){
+      return {
+        owner: qs('#owner').value.trim(),
+        repo: qs('#repo').value.trim(),
+        branch: qs('#branch').value.trim()||'main',
+        path: qs('#path').value.trim()||'protocols.json'
+      };
+    }
+
+    async function saveToGitHub(){
+      try{
+        setStatus('Saving…');
+        saveBasics();
+        const token = qs('#token').value.trim();
+        if(!token){ alert('Please paste a GitHub token.'); setStatus('Idle'); return; }
+        // Keep raw in sync if user edited it directly
+        try{ data = JSON.parse(qs('#raw').value); }catch(e){ /* keep data as is */ }
+
+        const {owner, repo, branch, path} = getRepoFields();
+        const body = {
+          message: qs('#commitMsg').value.trim() || `chore: update ${path}`,
+          content: base64EncodeUnicode(JSON.stringify(data, null, 2)),
+          branch,
+        };
+        if(fileSHA) body.sha = fileSHA;
+        const committerName = qs('#authorName').value.trim();
+        const committerEmail = qs('#authorEmail').value.trim();
+        if(committerName && committerEmail){ body.committer = { name: committerName, email: committerEmail }; }
+
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`,{
+          method:'PUT',
+          headers:{
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json'
+          },
+          body: JSON.stringify(body)
+        });
+        if(!res.ok){
+          const txt = await res.text();
+          throw new Error(`Save failed (${res.status}).\n${txt}`);
+        }
+        const out = await res.json();
+        fileSHA = out.content && out.content.sha ? out.content.sha : null;
+        setStatus('Saved ✔');
+        alert('Saved to GitHub.');
+      }catch(err){
+        console.error(err); setStatus('Error'); alert(err.message||String(err));
+      }
+    }
+
+    // Auto‑populate sensible defaults for your repo
+    (function init(){
+      // If accessed from the same Pages domain/repo, prefill owner/repo
+      const host = location.hostname; // e.g., tobiaslilley.github.io
+      const pathParts = location.pathname.split('/').filter(Boolean); // e.g., ["studl-data","editor","index.html"]
+      if(host.endsWith('github.io') && pathParts.length>0){
+        const inferredRepo = pathParts[0];
+        if(!localStorage.getItem('studl.repo')) qs('#repo').value = inferredRepo;
+        const inferredOwner = host.replace('.github.io','');
+        if(!localStorage.getItem('studl.owner')) qs('#owner').value = inferredOwner;
+      }
+    })();
+  </script>
+</body>
+</html>
